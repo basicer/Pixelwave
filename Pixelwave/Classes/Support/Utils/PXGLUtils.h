@@ -130,6 +130,7 @@ typedef PXGLColorVertices* PXGLColorVerticesRef;
 #pragma mark Make Functions
 #pragma mark -
 
+    
 PXInline_h PXGLVertex PXGLVertexMake(GLfloat x, GLfloat y);
 PXInline_h PXGLColorVertex PXGLColorVertexMake(GLfloat x, GLfloat y, GLubyte r, GLubyte g, GLubyte b, GLubyte a);
 PXInline_h PXGLTextureVertex PXGLTextureVertexMake(GLfloat x, GLfloat y, GLfloat s, GLfloat t);
@@ -193,6 +194,8 @@ PXInline_h void PXGLMatrixConvertAABBfv(PXGLMatrix *matrix, GLfloat *xMin, GLflo
 #pragma mark -
 
 PXInline_h bool _PXGLRectContainsAABB(_PXGLRect *rect, PXGLAABB *aabb);
+
+PXInline bool PXAmOpenGL2() { return true; }
 
 #ifdef __cplusplus
 }

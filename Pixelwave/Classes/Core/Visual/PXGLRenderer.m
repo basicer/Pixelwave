@@ -41,6 +41,7 @@
 #include "PXGLException.h"
 #include "PXSettings.h"
 #include "PXGLPrivate.h"
+#include "PXGLShaders.h"
 
 #import "PXDebug.h"
 #import "PXPrivateUtils.h"
@@ -51,7 +52,7 @@
 
 #define PX_GL_RENDERER_MIN_BUFFER_SIZE 16
 
-#define PX_GL_RENDERER_SEND_CORRECTED_SIZE
+//#define PX_GL_RENDERER_SEND_CORRECTED_SIZE
 
 //#define PX_RENDER_VBO
 
@@ -276,8 +277,10 @@ void PXGLEnableColorArray( )
 		return;
 
 	//Actually set the state in GL
-	glEnableClientState(GL_COLOR_ARRAY);
-	pxGLIsColorArrayEnabled = true;
+	if ( !PXAmOpenGL2() ) {
+        glEnableClientState(GL_COLOR_ARRAY);
+	}
+    pxGLIsColorArrayEnabled = true;
 }
 
 /*
@@ -291,8 +294,10 @@ void PXGLDisableColorArray( )
 		return;
 
 	//Actually set the state in GL
-	glDisableClientState(GL_COLOR_ARRAY);
-	pxGLIsColorArrayEnabled = false;
+    if ( !PXAmOpenGL2() ) {
+        glDisableClientState(GL_COLOR_ARRAY);
+	}
+    pxGLIsColorArrayEnabled = false;
 }
 
 /*
@@ -659,7 +664,8 @@ void PXGLFlushBufferToGL( )
 	// Check to see if the color array is enabled, or if we are going to use a
 	// color array anyway, if so... lets turn it on!
 	if (pxGLBufferVertexColorState == PX_GL_VERTEX_COLOR_MULTIPLE ||
-		PX_IS_BIT_ENABLED(pxGLStateInGL.clientState, PX_GL_COLOR_ARRAY))
+		PX_IS_BIT_ENABLED(pxGLStateInGL.clientState, PX_GL_COLOR_ARRAY) ||
+        PXAmOpenGL2())
 		//PX_IS_BIT_ENABLED(pxGLClientStateInGL, PX_GL_COLOR_ARRAY))
 	{
 		PXGLEnableColorArray( );
@@ -723,22 +729,58 @@ void PXGLFlushBufferToGL( )
 	//				of memory. The reason this is not done now is due to the
 	//				color array delima
 #ifndef PX_GL_RENDERER_SEND_CORRECTED_SIZE
-	glVertexPointer(2, GL_FLOAT, sizeof(PXGLColoredTextureVertex), &(pxGLVertexBuffer.array->x));
-	if (isTextured)
-		glTexCoordPointer(2, GL_FLOAT, sizeof(PXGLColoredTextureVertex), &(pxGLVertexBuffer.array->s));
-	if (pxGLIsColorArrayEnabled)
-		glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(PXGLColoredTextureVertex), &(pxGLVertexBuffer.array->r));
+    if ( !PXAmOpenGL2() ) {
+        glVertexPointer(2, GL_FLOAT, sizeof(PXGLColoredTextureVertex), &(pxGLVertexBuffer.array->x));
+        if (isTextured)
+            glTexCoordPointer(2, GL_FLOAT, sizeof(PXGLColoredTextureVertex), &(pxGLVertexBuffer.array->s));
+        if (pxGLIsColorArrayEnabled)
+            glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(PXGLColoredTextureVertex), &(pxGLVertexBuffer.array->r));
+        PXGLDraw( );
+    } else {
+        extern int m_shaderProgram;
+                
+        glUseProgram(m_shaderProgram);
+        int p = glGetAttribLocation(m_shaderProgram, "px_position");
+        int c = glGetAttribLocation(m_shaderProgram, "px_color");
+        int u = glGetAttribLocation(m_shaderProgram, "px_uv");
+
+        int m = glGetUniformLocation(m_shaderProgram, "px_mode");
+        glVertexAttribPointer(p, 2, GL_FLOAT, GL_FALSE, sizeof(PXGLColoredTextureVertex),&(pxGLVertexBuffer.array->x));
+        glEnableVertexAttribArray(p);
+        
+        if (isTextured) {
+            glVertexAttribPointer(u, 2, GL_FLOAT, GL_FALSE, sizeof(PXGLColoredTextureVertex), &(pxGLVertexBuffer.array->s));
+            glEnableVertexAttribArray(u);
+            glUniform1i(m, 2);
+        } else {
+            glDisableVertexAttribArray(u);
+            glUniform1i(m, 1);
+        }
+        
+        if ( pxGLIsColorArrayEnabled ) {
+            glVertexAttribPointer(c, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(PXGLColoredTextureVertex),&(pxGLVertexBuffer.array->r));
+            glEnableVertexAttribArray(c);
+        } else {
+            glDisableVertexAttribArray(c);
+        }
+                
+        
+                
+                
+        glGetError();
+        PXGLDraw( );
+    }
 	
 	// Have to call draw here because we are using stack memory
-	PXGLDraw( );
+	
 #else
 	// If we are textured,, and color array is turned on, then we don't need to
 	// manipulate the array.. we can just pass it to gl.
 	if (isTextured && pxGLIsColorArrayEnabled)
 	{
-		glVertexPointer(2, GL_FLOAT, sizeof(PXGLColoredTextureVertex), &(pxGLVertexBuffer.array->x));
-		glTexCoordPointer(2, GL_FLOAT, sizeof(PXGLColoredTextureVertex), &(pxGLVertexBuffer.array->s));
-		glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(PXGLColoredTextureVertex), &(pxGLVertexBuffer.array->r));
+        glVertexPointer(2, GL_FLOAT, sizeof(PXGLColoredTextureVertex), &(pxGLVertexBuffer.array->x));
+        glTexCoordPointer(2, GL_FLOAT, sizeof(PXGLColoredTextureVertex), &(pxGLVertexBuffer.array->s));
+        glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(PXGLColoredTextureVertex), &(pxGLVertexBuffer.array->r));
 
 		// Have to call draw here because we are using stack memory
 		PXGLDraw( );

@@ -15,6 +15,10 @@
 		1DAD0FD41056FFB800A5AC03 /* PXView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1DAD0FD21056FFB800A5AC03 /* PXView.h */; };
 		1DAD0FD51056FFB800A5AC03 /* PXView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1DAD0FD31056FFB800A5AC03 /* PXView.m */; };
 		1DAD0FF01057014100A5AC03 /* Pixelwave.h in Headers */ = {isa = PBXBuildFile; fileRef = 1DAD0FEF1057014100A5AC03 /* Pixelwave.h */; settings = {ATTRIBUTES = (); }; };
+		2181A7C51489C76F0049F43C /* PXOpenGL.h in Headers */ = {isa = PBXBuildFile; fileRef = 2181A7C41489C76F0049F43C /* PXOpenGL.h */; };
+		2181A7CA1489C89C0049F43C /* PXOpenGLExt.h in Headers */ = {isa = PBXBuildFile; fileRef = 2181A7C91489C89C0049F43C /* PXOpenGLExt.h */; };
+		2181A7CC1489D9FF0049F43C /* PXGLShaders.h in Headers */ = {isa = PBXBuildFile; fileRef = 2181A7CB1489D9FE0049F43C /* PXGLShaders.h */; };
+		2181A7CE1489DA180049F43C /* PXGLShaders.c in Sources */ = {isa = PBXBuildFile; fileRef = 2181A7CD1489DA180049F43C /* PXGLShaders.c */; };
 		2D0E8CE81353F2C200A42B3D /* PXTextureAtlasParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0E8CE61353F2C200A42B3D /* PXTextureAtlasParser.h */; };
 		2D0E8CE91353F2C200A42B3D /* PXTextureAtlasParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D0E8CE71353F2C200A42B3D /* PXTextureAtlasParser.m */; };
 		2D0E8D1E1353F8A900A42B3D /* PXTPAtlasParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0E8D1C1353F8A900A42B3D /* PXTPAtlasParser.h */; };
@@ -512,6 +516,10 @@
 		1DAD0FD21056FFB800A5AC03 /* PXView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PXView.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		1DAD0FD31056FFB800A5AC03 /* PXView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PXView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1DAD0FEF1057014100A5AC03 /* Pixelwave.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pixelwave.h; sourceTree = "<group>"; };
+		2181A7C41489C76F0049F43C /* PXOpenGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PXOpenGL.h; sourceTree = "<group>"; };
+		2181A7C91489C89C0049F43C /* PXOpenGLExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PXOpenGLExt.h; sourceTree = "<group>"; };
+		2181A7CB1489D9FE0049F43C /* PXGLShaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PXGLShaders.h; sourceTree = "<group>"; };
+		2181A7CD1489DA180049F43C /* PXGLShaders.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = PXGLShaders.c; sourceTree = "<group>"; };
 		2D0E8CE61353F2C200A42B3D /* PXTextureAtlasParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PXTextureAtlasParser.h; sourceTree = "<group>"; };
 		2D0E8CE71353F2C200A42B3D /* PXTextureAtlasParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PXTextureAtlasParser.m; sourceTree = "<group>"; };
 		2D0E8D1C1353F8A900A42B3D /* PXTPAtlasParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PXTPAtlasParser.h; sourceTree = "<group>"; };
@@ -1308,6 +1316,8 @@
 				52D7FF4913E8617200FABF6C /* PXTouchEngine.m */,
 				52DAB88B1278A70C002894E7 /* Audio */,
 				52DAB88A1278A6FA002894E7 /* Visual */,
+				2181A7C41489C76F0049F43C /* PXOpenGL.h */,
+				2181A7C91489C89C0049F43C /* PXOpenGLExt.h */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -2037,6 +2047,8 @@
 				5280DEA4133407AF00B0F353 /* PXGLStatePrivate.h */,
 				52DAB8971278A744002894E7 /* PXGLRenderer.h */,
 				52DAB8981278A744002894E7 /* PXGLRenderer.m */,
+				2181A7CB1489D9FE0049F43C /* PXGLShaders.h */,
+				2181A7CD1489DA180049F43C /* PXGLShaders.c */,
 			);
 			path = Visual;
 			sourceTree = "<group>";
@@ -2401,6 +2413,9 @@
 				5286DBED13E0CFCA00E5971F /* JSONRepresentation.h in Headers */,
 				52D7FF4A13E8617200FABF6C /* PXTouchEngine.h in Headers */,
 				52D7FF4D13E8623C00FABF6C /* PXEnginePrivate.h in Headers */,
+				2181A7C51489C76F0049F43C /* PXOpenGL.h in Headers */,
+				2181A7CA1489C89C0049F43C /* PXOpenGLExt.h in Headers */,
+				2181A7CC1489D9FF0049F43C /* PXGLShaders.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2642,6 +2657,7 @@
 				5286DBEC13E0CFCA00E5971F /* CJSONSerializer.m in Sources */,
 				52D7FF4B13E8617200FABF6C /* PXTouchEngine.m in Sources */,
 				52D7FF7513E865E600FABF6C /* PXEnginePrivate.m in Sources */,
+				2181A7CE1489DA180049F43C /* PXGLShaders.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -55,6 +55,8 @@
 #import "PXCGUtils.h"
 #import "PXStageOrientationEvent.h"
 
+#include "PXOpenGL.h"
+#include "PXGLShaders.h"
 #include "PXDebug.h"
 
 @interface PXView(Private)
@@ -93,7 +95,6 @@
 @implementation PXView
 
 @synthesize colorQuality;
-
 /**
  * @param frame The size of the newly created view.
  */
@@ -322,14 +323,27 @@
 
 	// Create the EAGL Context, using ES 1.1
 	[eaglContext release];
-	eaglContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
-	if (eaglContext == nil)
+    
+    if ( PXAmOpenGL2() ) {
+        eaglContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    } else {
+        eaglContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
+	}
+    if (eaglContext == nil)
 		return NO;
 
+    if ( PXAmOpenGL2() ) {
+        if ( ![EAGLContext setCurrentContext:eaglContext] ) return NO;
+    }
+    
 	// Set up the OpenGL frame buffers
 	if (![self createSurface])
 		return NO;
 	
+    if ( PXAmOpenGL2() ) {
+        PXApplyShaders();
+    }
+    
 	///////////////
 	// Dithering //
 	///////////////
@@ -338,13 +352,15 @@
 	if (!surfaceDither)
 	{
 		glDisable(GL_DITHER);
-	}
+    }
 
 	///////////////////////////
 	// Initialize the engine //
 	///////////////////////////
 
-	PXEngineInit(self);
+    PXEngineInit(self);
+    printf("-> ERROR @ %s %d = %x\n",__FUNCTION__,__LINE__,glGetError());
+
 
 	PXStage *stage = PXEngineGetStage();
 
@@ -364,6 +380,7 @@
 												 name:UIDeviceOrientationDidChangeNotification
 											   object:nil];
 
+    printf("-> ERROR @ %s %d = %x\n",__FUNCTION__,__LINE__,glGetError());
 	return YES;
 }
 

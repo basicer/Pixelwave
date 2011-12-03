@@ -44,8 +44,8 @@
 extern "C" {
 #endif
 	
-#include <OpenGLES/ES1/gl.h>
-#include <OpenGLES/ES1/glext.h>
+#include "PXOpenGl.h"
+#include "PXOpenGlExt.h"
 
 #include "PXGLUtils.h"
 #include "PXGLState.h"

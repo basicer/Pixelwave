@@ -119,6 +119,7 @@ GLubyte pxGLAlpha = 0xFF;
  */
 void PXGLInit(unsigned width, unsigned height, float scaleFactor)
 {
+
 	PXGLClipRect(0, 0, width, height);
 
 	pxGLPointSizePointer.pointer = NULL;
@@ -141,19 +142,23 @@ void PXGLInit(unsigned width, unsigned height, float scaleFactor)
 	// glBlendFunc could just be used.
 	//
 	//glBlendFuncSeparateOES(pxGLDefaultState.blendSource, pxGLDefaultState.blendDestination, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	
+    printf("-> ERROR @ %s %d = %x\n",__FUNCTION__,__LINE__,glGetError());
 	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_LIGHTING);
+	
 
-	// Set defaults
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_POINT_SMOOTH);
+    if ( !PXAmOpenGL2() ) {
+        // Set defaults
+        glDisable(GL_LIGHTING);
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_POINT_SMOOTH);
+        
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        glDisableClientState(GL_POINT_SIZE_ARRAY_OES);
 
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_POINT_SIZE_ARRAY_OES);
-
-	// Always enabled
-	glEnableClientState(GL_VERTEX_ARRAY);
+        
+        // Always enabled
+        glEnableClientState(GL_VERTEX_ARRAY);
+    }
 	glEnable(GL_BLEND);
 
 	PX_ENABLE_BIT(pxGLDefaultState.clientState, PX_GL_VERTEX_ARRAY);
@@ -167,9 +172,11 @@ void PXGLInit(unsigned width, unsigned height, float scaleFactor)
 
 	// Lets intialize the renderer
 	PXGLRendererInit( );
+    printf("-> ERROR @ %s %d = %x\n",__FUNCTION__,__LINE__,glGetError());
 
 	// and sync up with gl
 	PXGLSyncPXToGL( );
+    printf("-> ERROR @ %s %d = %x\n",__FUNCTION__,__LINE__,glGetError());
 
 	// Lets initialize the color to white
 	pxGLRed   = 0xFF;
@@ -183,7 +190,11 @@ void PXGLInit(unsigned width, unsigned height, float scaleFactor)
 	pxGLCurrentColor->alphaMultiplier = 1.0f;
 
 	// then reset the aabb
+    printf("-> ERROR @ %s %d = %x\n",__FUNCTION__,__LINE__,glGetError());
+
 	PXGLResetAABB(false);
+    printf("-> ERROR @ %s %d = %x\n",__FUNCTION__,__LINE__,glGetError());
+
 }
 
 /*
@@ -223,32 +234,35 @@ void PXGLSyncPXToGL( )
 		pxGLTexture = nVal;
 	}
 
-	//Check color
-	glGetFloatv(GL_CURRENT_COLOR, fVals);
-	bVal = PX_COLOR_BYTE_TO_FLOAT(fVals[0]);
-	if (pxGLRed != bVal)
-	{
-		changed = true; pxGLRed = bVal;
-	}
+    if ( !PXAmOpenGL2() ) {
+        //Check color
+        glGetFloatv(GL_CURRENT_COLOR, fVals);
+        
+        bVal = PX_COLOR_BYTE_TO_FLOAT(fVals[0]);
+        if (pxGLRed != bVal)
+        {
+            changed = true; pxGLRed = bVal;
+        }
 
-	bVal = PX_COLOR_BYTE_TO_FLOAT(fVals[1]);
-	if (pxGLGreen != bVal)
-	{
-		changed = true; pxGLGreen = bVal;
-	}
+        bVal = PX_COLOR_BYTE_TO_FLOAT(fVals[1]);
+        if (pxGLGreen != bVal)
+        {
+            changed = true; pxGLGreen = bVal;
+        }
 
-	bVal = PX_COLOR_BYTE_TO_FLOAT(fVals[2]);
-	if (pxGLBlue != bVal)
-	{
-		changed = true; pxGLBlue = bVal;
-	}
+        bVal = PX_COLOR_BYTE_TO_FLOAT(fVals[2]);
+        if (pxGLBlue != bVal)
+        {
+            changed = true; pxGLBlue = bVal;
+        }
 
-	bVal = PX_COLOR_BYTE_TO_FLOAT(fVals[3]);
-	if (pxGLAlpha != bVal)
-	{
-		changed = true; pxGLAlpha = bVal;
-	}
-
+        bVal = PX_COLOR_BYTE_TO_FLOAT(fVals[3]);
+        if (pxGLAlpha != bVal)
+        {
+            changed = true; pxGLAlpha = bVal;
+        }
+    }
+    
 	//Check line width
 	glGetFloatv(GL_LINE_WIDTH, fVals);
 	if (pxGLLineWidth != fVals[0])
@@ -256,16 +270,18 @@ void PXGLSyncPXToGL( )
 		changed = true;
 		pxGLLineWidth = fVals[0];
 	}
-
-	//Check point size
-	glGetFloatv(GL_POINT_SIZE, fVals);
-	if (pxGLPointSize != fVals[0])
-	{
-		changed = true;
-		pxGLPointSize = fVals[0];
-		pxGLHalfPointSize = pxGLPointSize * 0.5f;
-	}
-
+    
+    if ( !PXAmOpenGL2() ) {
+        //Check point size
+        glGetFloatv(GL_POINT_SIZE, fVals);
+        if (pxGLPointSize != fVals[0])
+        {
+            changed = true;
+            pxGLPointSize = fVals[0];
+            pxGLHalfPointSize = pxGLPointSize * 0.5f;
+        }
+    }
+    
 	//Check color type, reason for doing this is that we don't want anyone to
 	//start batching with the wrong type.
 	if (!changed)
@@ -423,8 +439,11 @@ void PXGLPreRender( )
 	PXGLResetColorTransformStack( );
 	PXGLResetMatrixStack( );
 
-	glPushMatrix( );
-	glLoadIdentity( );
+    if ( PXAmOpenGL2() ) {
+    } else {
+        glPushMatrix( );
+        glLoadIdentity( );
+    }
 	//glTranslatef(100.0f, -0.0f, 0.0f);
 	PXGLRendererPreRender( );
 }
@@ -436,8 +455,9 @@ void PXGLPreRender( )
 void PXGLPostRender( )
 {
 	PXGLRendererPostRender( );
-	glPopMatrix( );
-
+    if ( !PXAmOpenGL2() ) {
+        glPopMatrix( );
+    }
 #ifdef PX_DEBUG_MODE
 	if (PXDebugIsEnabled(PXDebugSetting_CountGLCalls))
 	{
@@ -2013,10 +2033,11 @@ PXInline_c void PXGLSetupEnables()
 	} \
 }
 
-		PXGLCompareAndSetClientState(PX_GL_POINT_SIZE_ARRAY, GL_POINT_SIZE_ARRAY_OES);
-		PXGLCompareAndSetClientState(PX_GL_TEXTURE_COORD_ARRAY, GL_TEXTURE_COORD_ARRAY);
-		PXGLCompareAndSetClientState(PX_GL_VERTEX_ARRAY, GL_VERTEX_ARRAY);
-
+        if ( !PXAmOpenGL2() ) {
+            PXGLCompareAndSetClientState(PX_GL_POINT_SIZE_ARRAY, GL_POINT_SIZE_ARRAY_OES);
+            PXGLCompareAndSetClientState(PX_GL_TEXTURE_COORD_ARRAY, GL_TEXTURE_COORD_ARRAY);
+            PXGLCompareAndSetClientState(PX_GL_VERTEX_ARRAY, GL_VERTEX_ARRAY);
+        }
 		PXGLCompareAndSetState(PX_GL_POINT_SPRITE, GL_POINT_SPRITE_OES);
 		PXGLCompareAndSetState(PX_GL_LINE_SMOOTH, GL_LINE_SMOOTH);
 		PXGLCompareAndSetState(PX_GL_POINT_SMOOTH, GL_POINT_SMOOTH);
@@ -2234,20 +2255,27 @@ void PXGLSetViewSize(unsigned width, unsigned height, float scaleFactor, bool or
 	pxGLWidthInPoints  = width;
 	pxGLHeightInPoints = height;
 
-	// in PIXELS
-	glViewport(0.0f,									// x
-			   0.0f,									// y
-			   pxGLWidthInPoints  * pxGLScaleFactor,	// width
-			   pxGLHeightInPoints * pxGLScaleFactor);	// height
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity( );
+    // DEAR JOHN: This was not getting called becasue Im retarted.
+    glViewport(0.0f,									// x
+               0.0f,									// y
+               pxGLWidthInPoints  * pxGLScaleFactor,	// width
+               pxGLHeightInPoints * pxGLScaleFactor);	// height
+    if ( PXAmOpenGL2() ) {
+        
+        
+    } else {
+        // in PIXELS
 
-	// in POINTS
-	glOrthof(0,						// xMin
-			 pxGLWidthInPoints,		// xMax
-			 pxGLHeightInPoints,	// yMin
-			 0,						// yMax
-			 -100.0f,				// zMin
-			  100.0f);				// zMax
-	glMatrixMode(GL_MODELVIEW);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity( );
+
+        // in POINTS
+        glOrthof(0,						// xMin
+                 pxGLWidthInPoints,		// xMax
+                 pxGLHeightInPoints,	// yMin
+                 0,						// yMax
+                 -100.0f,				// zMin
+                  100.0f);				// zMax
+        glMatrixMode(GL_MODELVIEW);
+    }
 }
