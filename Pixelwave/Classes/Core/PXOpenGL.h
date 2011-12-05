@@ -9,7 +9,7 @@
 #ifndef Pixelwave_PXOpenGL_h
 #define Pixelwave_PXOpenGL_h
 
-//#include <OpenGLES/ES1/gl.h>
+#include <OpenGLES/ES1/gl.h>
 #include <OpenGLES/ES2/gl.h>
 
 

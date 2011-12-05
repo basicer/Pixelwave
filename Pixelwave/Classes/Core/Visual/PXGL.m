@@ -280,57 +280,56 @@ void PXGLSyncPXToGL( )
             pxGLPointSize = fVals[0];
             pxGLHalfPointSize = pxGLPointSize * 0.5f;
         }
-    }
     
-	//Check color type, reason for doing this is that we don't want anyone to
-	//start batching with the wrong type.
-	if (!changed)
-	{
-		//Keep this in the if statement so we might not have to do it.
-		glGetIntegerv(GL_COLOR_ARRAY_TYPE, &nVal);
-		if (pxGLColorPointer.type != nVal)
-			changed = true;
-	}
+        //Check color type, reason for doing this is that we don't want anyone to
+        //start batching with the wrong type.
+        if (!changed)
+        {
+            //Keep this in the if statement so we might not have to do it.
+            glGetIntegerv(GL_COLOR_ARRAY_TYPE, &nVal);
+            if (pxGLColorPointer.type != nVal)
+                changed = true;
+        }
 
-	//Check color type, reason for doing this is that we don't want anyone to
-	//start batching with the wrong type.
-	if (!changed)
-	{
-		//Keep this in the if statement so we might not have to do it.
-		glGetIntegerv(GL_VERTEX_ARRAY_TYPE, &nVal);
-		if (pxGLVertexPointer.type != nVal)
-			changed = true;
-	}
+        //Check color type, reason for doing this is that we don't want anyone to
+        //start batching with the wrong type.
+        if (!changed)
+        {
+            //Keep this in the if statement so we might not have to do it.
+            glGetIntegerv(GL_VERTEX_ARRAY_TYPE, &nVal);
+            if (pxGLVertexPointer.type != nVal)
+                changed = true;
+        }
 
-	//Check color type, reason for doing this is that we don't want anyone to
-	//start batching with the wrong type.
-	if (!changed)
-	{
-		//Keep this in the if statement so we might not have to do it.
-		glGetIntegerv(GL_TEXTURE_COORD_ARRAY_TYPE, &nVal);
-		if (pxGLTexCoordPointer.type != nVal)
-			changed = true;
-	}
+        //Check color type, reason for doing this is that we don't want anyone to
+        //start batching with the wrong type.
+        if (!changed)
+        {
+            //Keep this in the if statement so we might not have to do it.
+            glGetIntegerv(GL_TEXTURE_COORD_ARRAY_TYPE, &nVal);
+            if (pxGLTexCoordPointer.type != nVal)
+                changed = true;
+        }
 
-	//Check color type, reason for doing this is that we don't want anyone to
-	//start batching with the wrong type.
-	if (!changed)
-	{
-		//Keep this in the if statement so we might not have to do it.
-		glGetIntegerv(GL_POINT_SIZE_ARRAY_TYPE_OES, &nVal);
-		if (pxGLPointSizePointer.type != nVal)
-			changed = true;
-	}
+        //Check color type, reason for doing this is that we don't want anyone to
+        //start batching with the wrong type.
+        if (!changed)
+        {
+            //Keep this in the if statement so we might not have to do it.
+            glGetIntegerv(GL_POINT_SIZE_ARRAY_TYPE_OES, &nVal);
+            if (pxGLPointSizePointer.type != nVal)
+                changed = true;
+        }
 
-	//We need to check the texture parameters now...
+        //We need to check the texture parameters now...
 
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING_OES, &nVal);
-	if (pxGLFramebuffer != nVal)
-	{
-		pxGLFramebuffer = nVal;
-		changed = true;
-	}
-
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING_OES, &nVal);
+        if (pxGLFramebuffer != nVal)
+        {
+            pxGLFramebuffer = nVal;
+            changed = true;
+        }
+    }
 	//If any of our values have changed, then we should flush the buffer
 	if (changed)
 		PXGLFlushBuffer( );

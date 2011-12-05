@@ -46,8 +46,8 @@ extern "C" {
 
 #import "PXHeaderUtils.h"
 
-#include <OpenGLES/ES1/gl.h>
-#include <OpenGLES/ES1/glext.h>
+#include "PXOpenGL.h"
+#include "PXOpenGLExt.h"
 #include <CoreGraphics/CGGeometry.h>
 
 #pragma mark -
@@ -126,6 +126,8 @@ typedef struct
 
 typedef PXGLColorVertices* PXGLColorVerticesRef;
 
+PXInline_h bool PXAmOpenGL2();
+    
 #pragma mark -
 #pragma mark Make Functions
 #pragma mark -
@@ -194,7 +196,8 @@ PXInline_h void PXGLMatrixConvertAABBfv(PXGLMatrix *matrix, GLfloat *xMin, GLflo
 #pragma mark -
 
 PXInline_h bool _PXGLRectContainsAABB(_PXGLRect *rect, PXGLAABB *aabb);
-PXInline_h bool PXAmOpenGL2();
+    
+    
 #ifdef __cplusplus
 }
 #endif

@@ -10,7 +10,7 @@
 #define Pixelwave_PXOpenGLExt_h
 
 
-//#include <OpenGLES/ES1/glext.h>
+#include <OpenGLES/ES1/glext.h>
 #include <OpenGLES/ES2/glext.h>
 
 #endif

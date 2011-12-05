@@ -765,10 +765,6 @@ void PXGLFlushBufferToGL( )
             glDisableVertexAttribArray(c);
         }
                 
-        
-                
-                
-        glGetError();
         PXGLDraw( );
     }
 	
