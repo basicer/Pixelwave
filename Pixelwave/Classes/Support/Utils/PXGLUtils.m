@@ -47,6 +47,8 @@
 #define PXGLAABBfResetMin MAXFLOAT
 #define PXGLAABBfResetMax (-MAXFLOAT)
 
+PXInline_c bool PXAmOpenGL2() { return true; }
+
 const PXGLAABB PXGLAABBReset = {PXGLAABBResetMin, PXGLAABBResetMin, PXGLAABBResetMax, PXGLAABBResetMax};
 const PXGLAABBf PXGLAABBfReset = {PXGLAABBfResetMin, PXGLAABBfResetMin, PXGLAABBfResetMax, PXGLAABBfResetMax};
 

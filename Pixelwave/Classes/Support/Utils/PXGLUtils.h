@@ -194,9 +194,7 @@ PXInline_h void PXGLMatrixConvertAABBfv(PXGLMatrix *matrix, GLfloat *xMin, GLflo
 #pragma mark -
 
 PXInline_h bool _PXGLRectContainsAABB(_PXGLRect *rect, PXGLAABB *aabb);
-
-PXInline bool PXAmOpenGL2() { return true; }
-
+PXInline_h bool PXAmOpenGL2();
 #ifdef __cplusplus
 }
 #endif

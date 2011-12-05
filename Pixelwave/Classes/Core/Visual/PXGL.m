@@ -439,8 +439,7 @@ void PXGLPreRender( )
 	PXGLResetColorTransformStack( );
 	PXGLResetMatrixStack( );
 
-    if ( PXAmOpenGL2() ) {
-    } else {
+    if ( !PXAmOpenGL2() ) {
         glPushMatrix( );
         glLoadIdentity( );
     }
@@ -2053,10 +2052,12 @@ PXInline_c void PXGLSetupEnables()
 
 		if (PX_IS_BIT_ENABLED_IN_BOTH(pxGLState.state, pxGLStateInGL.state, PX_GL_SHADE_MODEL_FLAT))
 		{
-			if (PX_IS_BIT_ENABLED(pxGLState.state, PX_GL_SHADE_MODEL_FLAT))
-				glShadeModel(GL_FLAT);
-			else
-				glShadeModel(GL_SMOOTH);
+            if ( !PXAmOpenGL2() ) {
+                if (PX_IS_BIT_ENABLED(pxGLState.state, PX_GL_SHADE_MODEL_FLAT))
+                    glShadeModel(GL_FLAT);
+                else
+                    glShadeModel(GL_SMOOTH);
+            }
 		}
 
 		if (blendModeNotEqual)
@@ -2255,15 +2256,11 @@ void PXGLSetViewSize(unsigned width, unsigned height, float scaleFactor, bool or
 	pxGLWidthInPoints  = width;
 	pxGLHeightInPoints = height;
 
-    // DEAR JOHN: This was not getting called becasue Im retarted.
-    glViewport(0.0f,									// x
+        glViewport(0.0f,									// x
                0.0f,									// y
                pxGLWidthInPoints  * pxGLScaleFactor,	// width
                pxGLHeightInPoints * pxGLScaleFactor);	// height
-    if ( PXAmOpenGL2() ) {
-        
-        
-    } else {
+    if ( !PXAmOpenGL2() ) {
         // in PIXELS
 
         glMatrixMode(GL_PROJECTION);

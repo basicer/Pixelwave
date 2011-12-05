@@ -677,13 +677,13 @@ void PXGLFlushBufferToGL( )
 				   pxGLBufferLastVertexGreen,
 				   pxGLBufferLastVertexBlue,
 				   pxGLBufferLastVertexAlpha);
-	}
-
-	// If the point size array is enabled, then lets set the pointer for it.
-	if (PX_IS_BIT_ENABLED(pxGLStateInGL.clientState, PX_GL_POINT_SIZE_ARRAY))
-	//if (PX_IS_BIT_ENABLED(pxGLClientStateInGL, PX_GL_POINT_SIZE_ARRAY))
-		glPointSizePointerOES(GL_FLOAT, 0, pxGLPointSizeBuffer.array);
-
+	
+        // TODO: Ok so we might need to transalte these?
+        // If the point size array is enabled, then lets set the pointer for it.
+        if (PX_IS_BIT_ENABLED(pxGLStateInGL.clientState, PX_GL_POINT_SIZE_ARRAY))
+        //if (PX_IS_BIT_ENABLED(pxGLClientStateInGL, PX_GL_POINT_SIZE_ARRAY))
+            glPointSizePointerOES(GL_FLOAT, 0, pxGLPointSizeBuffer.array);
+    }
 	// shorts even though it is actually a boolean, for alignment
 	int isTextured = PX_IS_BIT_ENABLED(pxGLStateInGL.clientState, PX_GL_TEXTURE_COORD_ARRAY);
 	//int isTextured = PX_IS_BIT_ENABLED(pxGLClientStateInGL, PX_GL_TEXTURE_COORD_ARRAY);
@@ -751,7 +751,8 @@ void PXGLFlushBufferToGL( )
         if (isTextured) {
             glVertexAttribPointer(u, 2, GL_FLOAT, GL_FALSE, sizeof(PXGLColoredTextureVertex), &(pxGLVertexBuffer.array->s));
             glEnableVertexAttribArray(u);
-            glUniform1i(m, 2);
+            
+            glUniform1i(m, 3);
         } else {
             glDisableVertexAttribArray(u);
             glUniform1i(m, 1);

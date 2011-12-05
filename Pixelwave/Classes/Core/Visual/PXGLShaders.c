@@ -16,35 +16,69 @@
 
 int m_shaderProgram;
 
-int PXGLGetShaderAttrib(const char* name)
-{
-    return glGetAttribLocation(m_shaderProgram, "px_position");
-    
-}
+const char *VertexShader = "                                                        \n\
+attribute vec4 px_position;                                                         \n\
+attribute vec4 px_color;                                                            \n\
+attribute vec2 px_uv;                                                               \n\
+                                                                                    \n\
+varying vec4 v_color;                                                               \n\
+varying vec2 v_uv;                                                                  \n\
+                                                                                    \n\
+uniform int mode;                                                                   \n\
+                                                                                    \n\
+void main(void) {                                                                   \n\
+    //gl_Position = vec4(px_position.xy,0.0,1.0) * 0.001;                           \n\
+    //vec2 scale = vec2(1.0/320.0,1.0/480.0);                                       \n\
+    vec2 scale = vec2(2.0/320.0,2.0/480.0);                                         \n\
+    gl_Position = vec4(                                                             \n\
+        -1.0+px_position.x * scale.x,                                               \n\
+        1.0+px_position.y * -scale.y,                                               \n\
+        px_position.z,                                                              \n\
+        px_position.w                                                               \n\
+    );                                                                              \n\
+    v_color = px_color;                                                             \n\
+    v_uv = px_uv;                                                                   \n\
+}                                                                                   \n\
+";
+
+const char *FragmentShader = "                                                      \n\
+#ifdef GL_ES                                                                        \n\
+// define default precision for float, vec, mat.                                    \n\
+precision highp float;                                                              \n\
+#endif                                                                              \n\
+                                                                                    \n\
+uniform sampler2D px_texture;                                                       \n\
+                                                                                    \n\
+varying vec4 v_color;                                                               \n\
+varying vec2 v_uv;                                                                  \n\
+                                                                                    \n\
+uniform int px_mode;                                                                \n\
+                                                                                    \n\
+void main(void) {                                                                   \n\
+                                                                                    \n\
+    //gl_FragColor = vec4(gl_FragCoord.x/480.0,gl_FragCoord.y/320.0,0.0,0.5);       \n\
+    if ( px_mode == 1 ) {                                                           \n\
+        gl_FragColor = v_color;                                                     \n\
+    } else {                                                                        \n\
+        gl_FragColor = texture2D(px_texture, v_uv) * v_color;                       \n\
+    }                                                                               \n\
+}                                                                                   \n\
+";
+
+
 
 int PXLoadShader (GLenum type, const char* source)
 {
-    char *buffer;
-    FILE* file = fopen(source, "r");
-    size_t len = fseek(file, 0, SEEK_END);
-    int count;
-    len = 1000;
-    fseek(file, 0, SEEK_SET);
-    buffer = malloc(len);
-    count = fread(buffer, 1, len, file);
-    fclose(file);
-    buffer[count] = '\0';
-    
-	const unsigned int shader = glCreateShader(type);
+    const unsigned int shader = glCreateShader(type);
 	assert(shader != 0);
     
-	glShaderSource(shader, 1, (const GLchar**)&buffer, NULL);
+	glShaderSource(shader, 1, (const GLchar**)&source, NULL);
 	glCompileShader(shader);
     
 	int success;
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    printf("SRC:\n---\n%s\n---\n", buffer);
-    free(buffer);
+    printf("SRC:\n---\n%s\n---\n", source);
+
 	if (success == 0)
 	{
 		char errorMsg[2048];
@@ -66,8 +100,8 @@ void PXApplyShaders() {
     
     glEnable(GL_TEXTURE_2D);
     
-	const int vertexShader = PXLoadShader (GL_VERTEX_SHADER, "/Users/basicer/Code/Vertex.txt");
-    const int fragmentShader = PXLoadShader (GL_FRAGMENT_SHADER, "/Users/basicer/Code/Fragment.txt");
+	const int vertexShader = PXLoadShader (GL_VERTEX_SHADER, VertexShader);
+    const int fragmentShader = PXLoadShader (GL_FRAGMENT_SHADER, FragmentShader);
 	assert(fragmentShader != 0);
 
 	m_shaderProgram = glCreateProgram();
