@@ -92,10 +92,7 @@
 
 	// Load a background image
 	fileName = isIpad ? @"Background-iPad.png" : @"Background.png";
-    [PXTexture textureWithContentsOfFile:@"Rob.png"];
 	PXTexture *backgroundImage = [PXTexture textureWithContentsOfFile:fileName];;
-
-
 
 	// Load the raccoon
 	fileName = isIpad ? @"Rocky@2x.png" : @"Rocky.png";
@@ -163,7 +160,6 @@
 
 	// Background image
 	[self addChild:backgroundImage];
-
 
 	// Set the raccoon's anchor point to be in the bottom-center to make it
 	// easier to align with the shadow
